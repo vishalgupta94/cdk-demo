@@ -1,0 +1,55 @@
+name: CDK Deploy (main)
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '20'
+  AWS_REGION: ${{ env.AWS_REGION || secrets.AWS_REGION }}
+  AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID || secrets.AWS_ACCOUNT_ID }}
+  AWS_ACCESS_KEY_ID_CI: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY_CI: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # Set CDK defaults for account/region
+      - name: Set CDK env
+        run: |
+          echo "CDK_DEFAULT_ACCOUNT=${AWS_ACCOUNT_ID}" >> $GITHUB_ENV
+          echo "CDK_DEFAULT_REGION=${AWS_REGION}" >> $GITHUB_ENV
+
+      # Configure AWS credentials (access keys only)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_CI }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_CI }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Lambda Dependency # TODO: replace with monorepo
+        run: cd src/handlers/hello-world && npm ci
+
+      - name: CDK Synth
+        run: npx cdk synth
+
+      - name: CDK Deploy (all stacks)
+        run: npx cdk deploy --all --require-approval never --verbose
