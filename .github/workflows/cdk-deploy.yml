@@ -6,8 +6,8 @@ on:
 
 env:
   NODE_VERSION: '20'
-  AWS_REGION: ${{ env.AWS_REGION || secrets.AWS_REGION }}
-  AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID || secrets.AWS_ACCOUNT_ID }}
+  AWS_REGION: ${{ vars.AWS_REGION || secrets.AWS_REGION }}
+  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID || secrets.AWS_ACCOUNT_ID }}
   AWS_ACCESS_KEY_ID_CI: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY_CI: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
