@@ -23,7 +23,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       # Set CDK defaults for account/region
       - name: Set CDK env
@@ -43,10 +42,10 @@ jobs:
         run: aws sts get-caller-identity
 
       - name: Install deps
-        run: npm ci
+        run: npm install
 
       - name: Install Lambda Dependency # TODO: replace with monorepo
-        run: cd src/handlers/hello-world && npm ci
+        run: cd src/handlers/hello-world && npm install
 
       - name: CDK Synth
         run: npx cdk synth
