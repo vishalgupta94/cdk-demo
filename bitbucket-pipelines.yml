@@ -1,0 +1,38 @@
+image: node:20
+
+options:
+  max-time: 10
+
+pipelines:
+  default:
+    - step:
+        name: Build and Test
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run build
+          - npm test
+          - npx cdk synth
+
+  branches:
+    main:
+      - step:
+          name: Deploy to AWS
+          deployment: production
+          caches:
+            - node
+          script:
+            - export CDK_DEFAULT_ACCOUNT=$AWS_ACCOUNT_ID
+            - export CDK_DEFAULT_REGION=$AWS_DEFAULT_REGION
+            - export AWS_DEFAULT_REGION=$AWS_REGION
+            - npm install
+            - cd src/handlers/hello-world && npm install && cd ../../..
+            - npm run build
+            - npx cdk synth
+            - npx cdk deploy --all --require-approval never --verbose
+
+definitions:
+  caches:
+    node: node_modules
+
