@@ -43,7 +43,7 @@ jobs:
         run: aws sts get-caller-identity
 
       - name: Install deps
-        run: npm ci
+        run: npm i
 
       - name: Install Lambda Dependency # TODO: replace with monorepo
         run: cd src/handlers/hello-world && npm ci
