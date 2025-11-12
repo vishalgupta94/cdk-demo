@@ -2,12 +2,15 @@
 
 A simple serverless REST API built with AWS CDK, Lambda, and API Gateway using TypeScript.
 
+**✅ Includes CI/CD configurations for both GitHub Actions and Bitbucket Pipelines**
+
 ## What This Does
 
 This project deploys a serverless API that responds with a "Hello from Lambda!" message. It demonstrates:
 - Infrastructure as Code using AWS CDK
 - Lambda function with API Gateway integration
 - TypeScript for both infrastructure and application code
+- Ready-to-use CI/CD pipelines for automated deployments
 
 ## CI/CD Setup
 
@@ -55,18 +58,12 @@ Also enable Pipelines in Repository Settings → Pipelines → Settings.
 npm install
 ```
 
-**2. Bootstrap CDK (first time only):**
+**2. Deploy to AWS:**
 ```bash
-npx cdk bootstrap
-```
-
-**3. Deploy to AWS:**
-```bash
-npm run build
 npx cdk deploy
 ```
 
-**4. Test the API:**
+**3. Test the API:**
 
 After deployment, you'll get an API URL. Test it:
 ```bash
